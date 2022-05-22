@@ -36,11 +36,12 @@ are interested in having our own token for this.
 ```
 w_i: total amount staked right now on application i
 W: max amount allowed to stake on an application
-a: multiplier for tier 1
-b: multiplier for tier 2
-c: multiplier for tier 3
+R: max reward that will be paid # given as a parameter
+a: multiplier for tier 1 # given as a parameter OR adjustable? (validate this! - in case we want to set the APR)
+b: multiplier for tier 2 # given as a parameter
+c: multiplier for tier 3 # given as a parameter
 k: amount of tokens that the user wants to stake on an application
-v: amoutn of vouchers that a user gets in exchange for staking
+v: amount of vouchers that a user gets in exchange for staking
 ```
 
 function definitions
@@ -71,4 +72,14 @@ def num_vouchers(w_i, W, k):
     k -= k_tier_3
 
     return a * k_tier_1 + b * k_tier_2  + c * k_tier_3
+```
+
+set the W
+
+```
+# we know that
+R = a * W/3 + b * W/3 + c * W/3
+R = W / 3 * (a + b + c)
+# therefore
+W = R * 3 / (a + b + c)
 ```
