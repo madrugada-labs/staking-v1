@@ -29,6 +29,27 @@ simplifies our life as smart contract developers while still keeps the core idea
 we will allow multiple tokens to be staked, or at least to be used and converted right away. And in particular, we
 are interested in having our own token for this.
 
+## Architecture
+
+### Job Factory program
+
+### Job instance program
+
+### Application Factory program
+
+Creates an `application instance` with the following parameters:
+
+- creates mint authority for this job application
+
+### Application instance program
+
+- mints tokens when an applicant stakes, and transferred them in exchange for the USDC.
+- Keeps track of the amount staked for each time a user stakes.
+- Prevents that the max allocated is exceeded.
+- Pays the reward in USDC in exchange for the minted tokens when event that the job is closed and the job applicant gets the job
+- Gives the original sum of USDC staked with no reward in exhcange for all minted tokens in case the job is closed and job
+  applicant does not get the job.
+
 ## Formulae
 
 **Parameter definitions** (everything is denominated in USDC):
