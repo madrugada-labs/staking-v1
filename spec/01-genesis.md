@@ -31,6 +31,7 @@ are interested in having our own token for this.
 
 ## Architecture
 
+[uml-graph](https://drive.google.com/file/d/1N-f4ZUGqsPfK9Q2JHuKDMqNkezHwR5z8/view?usp=sharing)
 ### Job Factory program
 
 ### Job instance program
