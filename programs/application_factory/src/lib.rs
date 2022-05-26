@@ -17,6 +17,8 @@ pub mod application_factory {
         details.job_ad_id = job_ad_id;
         details.authority = ctx.accounts.authority.key();
 
+        //TODO: initialize a new token mint
+
         Ok(())
     }
 
