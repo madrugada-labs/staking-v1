@@ -21,32 +21,32 @@ pub mod application_factory {
         Ok(())
     }
 
-    pub fn update_status(ctx: Context<UpdateStatus>,bump: u8,  job_status: bool) -> Result<()> {
+    // pub fn update_status(ctx: Context<UpdateStatus>,bump: u8,  job_status: bool) -> Result<()> {
 
-        let details = &mut ctx.accounts.base_account;
+    //     let details = &mut ctx.accounts.base_account;
 
-        details.status = job_status;
+    //     details.status = job_status;
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 }
 
 #[derive(Accounts)]
 #[instruction(job_ad_id: String)]
 pub struct Initialize<'info> {
-    #[account(init, payer = authority, seeds = [JOB_APPLICATION_SEED, job_ad_id.as_bytes()[..18].as_ref(), job_ad_id.as_bytes()[18..].as_ref(), authority.key().as_ref()], bump, space = 1 + 4 + 32 + 40)]
+    #[account(init, payer = authority, seeds = [JOB_APPLICATION_SEED, job_ad_id.as_bytes()[..18].as_ref(), job_ad_id.as_bytes()[18..].as_ref(), authority.key().as_ref()], bump, space = 1 + 4 + 32 + 40 + 8)]
     pub base_account: Account<'info, JobApplication>,
     #[account(mut)]
     pub authority: Signer<'info>,
     pub system_program: Program<'info, System>
 }
 
-#[derive(Account)]
-#[instruction(bump: u8)]
-pub struct UpdateStatus<'info> {
-    #[account(mut, seeds = [JOB_APPLICATION_SEED, job_ad_id.as_bytes()[..18].as_ref(), job_ad_id.as_bytes()[18..].as_ref(), authority.key().as_ref()], bump = bump)]
-    pub base_account: Account<'info, JobApplication>,
-}
+// #[derive(Account)]
+// #[instruction(bump: u8)]
+// pub struct UpdateStatus<'info> {
+//     #[account(mut, seeds = [JOB_APPLICATION_SEED, job_ad_id.as_bytes()[..18].as_ref(), job_ad_id.as_bytes()[18..].as_ref(), authority.key().as_ref()], bump = bump)]
+//     pub base_account: Account<'info, JobApplication>,
+// }
 
 #[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
 pub enum JobStatus {

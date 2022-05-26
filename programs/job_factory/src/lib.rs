@@ -23,7 +23,7 @@ pub mod job_factory {
 #[derive(Accounts)]
 #[instruction(job_ad_id: String)]
 pub struct Initialize<'info> {
-    #[account(init, payer = authority, seeds = [JOB_FACTORY_SEED, job_ad_id.as_bytes()[..18].as_ref(), job_ad_id.as_bytes()[18..].as_ref()], bump, space = 4 + 32 + 40 )]
+    #[account(init, payer = authority, seeds = [JOB_FACTORY_SEED, job_ad_id.as_bytes()[..18].as_ref(), job_ad_id.as_bytes()[18..].as_ref()], bump, space = 4 + 32 + 40 + 8 )]
     pub base_account: Account<'info, JobStakingParameter>,
     #[account(mut)]
     pub authority: Signer<'info>,
