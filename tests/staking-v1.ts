@@ -83,10 +83,32 @@ describe("staking-v1", () => {
     console.log("Your transaction signature", tx);
 
     const jobFactoryState = await jobProgram.account.jobStakingParameter.fetch(jobFactoryPDA);
-    
+
     assert.strictEqual(jobAdId, jobFactoryState.jobAdId);
-    assert.strictEqual( alice.publicKey.toBase58(), jobFactoryState.authority.toBase58());
+    assert.strictEqual(alice.publicKey.toBase58(), jobFactoryState.authority.toBase58());
     assert.strictEqual(maxAmountPerApplication, jobFactoryState.maxAmountPerApplication);
 
   });
+
+  it("Initializing Application Factory", async () => {
+
+    const [applicationFactoryPDA, applicationFactoryBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from("job_application"), Buffer.from(jobAdId.substring(0,18)), Buffer.from(jobAdId.substring(18,36)), bob.publicKey.toBuffer()],
+      applicationProgram.programId
+    );
+
+    const tx = await applicationProgram.methods.initialize(jobAdId).accounts({
+      baseAccount: applicationFactoryPDA,
+      authority: bob.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId
+    }).signers([bob]).rpc();
+
+    console.log("Your transaction signature", tx);
+
+    const jobApplicationState = await applicationProgram.account.jobApplication.fetch(applicationFactoryPDA);
+
+    console.log(jobApplicationState.status);
+
+  })
+
 });
