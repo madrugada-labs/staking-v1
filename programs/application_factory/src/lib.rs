@@ -14,12 +14,7 @@ pub mod application_factory {
 
         let details = &mut ctx.accounts.base_account;
 
-
-
-        details.status = JobStatus::pending;
-        details.stake_amount = 0;
-        details.job_ad_id = job_ad_id;
-        details.authority = ctx.accounts.authority.key();
+        details.reset(job_ad_id, ctx.accounts.authority.key());
 
         //TODO: initialize a new token mint
 
@@ -49,15 +44,15 @@ pub struct Initialize<'info> {
 #[derive(Account)]
 #[instruction(bump: u8)]
 pub struct UpdateStatus<'info> {
-    #[account(mut, seeds = [JOB_APPLICATION_SEED, job_ad_id.as_bytes()[..18].as_ref(), job_ad_id.as_bytes()[18..].as_ref(), authority.key().as_ref()], bump)]
+    #[account(mut, seeds = [JOB_APPLICATION_SEED, job_ad_id.as_bytes()[..18].as_ref(), job_ad_id.as_bytes()[18..].as_ref(), authority.key().as_ref()], bump = bump)]
     pub base_account: Account<'info, JobApplication>,
 }
 
 #[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
 pub enum JobStatus {
-    selected,
-    rejected,
-    pending
+    Selected,
+    Rejected,
+    Pending
 }
 
 #[account]
@@ -66,5 +61,14 @@ pub struct JobApplication {
     pub stake_amount: u32, // 4
     pub job_ad_id: String, // 40
     pub authority: Pubkey // 32
+}
+
+impl<'info> JobApplication {
+    pub fn reset(&mut self, job_ad_id: String, authority: Pubkey) {
+        self.job_ad_id = job_ad_id;
+        self.stake_amount = 0;
+        self.status = JobStatus::Pending;
+        self.authority = authority;
+    }
 }
 
