@@ -19,6 +19,7 @@ describe("staking-v1", () => {
   let bob = anchor.web3.Keypair.generate(); // Applicant
   let cas = anchor.web3.Keypair.generate(); // Stakeholder
   let dan = anchor.web3.Keypair.generate(); // Stakeholder
+  let tokenMint = anchor.web3.Keypair.generate(); // Token Mint
 
   it("Funds all users", async() => {
     await provider.connection.confirmTransaction(
@@ -103,6 +104,7 @@ describe("staking-v1", () => {
       authority: bob.publicKey,
       tokenProgram: spl.TOKEN_PROGRAM_ID,
       rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+      mintAccount: tokenMint.publicKey,
       systemProgram: anchor.web3.SystemProgram.programId
     }).signers([bob]).rpc();
 

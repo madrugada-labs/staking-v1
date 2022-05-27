@@ -22,14 +22,14 @@ pub mod application_factory {
         // let new_token_mint = Keypair::new();
         let decimals = 9;
 
-        //TODO: initialize a new token mint
+        //initialize a new token mint
 
         let bump_vector = bump.to_le_bytes();
 
         let inner = vec![
             JOB_APPLICATION_SEED,
-            job_ad_id_bytes_1.as_ref(),
-            job_ad_id_bytes_2.as_ref(),
+            job_ad_id_bytes_1,
+            job_ad_id_bytes_2,
             bump_vector.as_ref(),
         ];
         let outer = vec![inner.as_slice()];
@@ -76,7 +76,7 @@ pub struct Initialize<'info> {
     pub authority: Signer<'info>,
     pub token_program: Program<'info, Token>,
     pub rent: Sysvar<'info, Rent>,
-    /// CHECk: ...
+    /// CHECK: ...
     pub mint_account: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
 }
