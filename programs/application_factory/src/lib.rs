@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("2Q3jVyyE5nfU3nCZKTuemtHFdxXBcq6QtjWDR387TeJQ");
 
 const JOB_APPLICATION_SEED: &'static [u8] = b"job_application";
 

@@ -70,7 +70,7 @@ describe("staking-v1", () => {
     const maxAmountPerApplication = 100000;
 
     const [jobFactoryPDA, jobFactoryBump] = await anchor.web3.PublicKey.findProgramAddress(
-      [Buffer.from("job_factory"), Buffer.from(jobAdId.substring(0,18)), Buffer.from(jobAdId.substring(18,36))],
+      [Buffer.from("jobfactory"), Buffer.from(jobAdId.substring(0, 18)), Buffer.from(jobAdId.substring(18, 36))],
       jobProgram.programId
     );
 

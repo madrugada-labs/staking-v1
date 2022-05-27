@@ -1,8 +1,8 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("74RghwMGYpbZSrv4EFgwZP5A4YcKGy2BntdjiMEHB7E8");
 
-const JOB_FACTORY_SEED: &'static [u8] = b"job_factory";
+const JOB_FACTORY_SEED: &'static [u8] = b"jobfactory";
 
 #[program]
 pub mod job_factory {
