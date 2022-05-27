@@ -3,6 +3,7 @@ import { Program } from "@project-serum/anchor";
 import { JobFactory } from "../target/types/job_factory";
 import {ApplicationFactory} from "../target/types/application_factory";
 import {v4 as uuidv4} from "uuid";
+const spl = require("@solana/spl-token");
 
 const assert = require("assert");
 
@@ -97,9 +98,11 @@ describe("staking-v1", () => {
       applicationProgram.programId
     );
 
-    const tx = await applicationProgram.methods.initialize(jobAdId).accounts({
+    const tx = await applicationProgram.methods.initialize(jobAdId, applicationFactoryBump).accounts({
       baseAccount: applicationFactoryPDA,
       authority: bob.publicKey,
+      tokenProgram: spl.TOKEN_PROGRAM_ID,
+      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
       systemProgram: anchor.web3.SystemProgram.programId
     }).signers([bob]).rpc();
 
