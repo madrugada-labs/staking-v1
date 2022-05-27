@@ -1,6 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::{associated_token::AssociatedToken, token::{CloseAccount, Mint, Token, TokenAccount, Transfer, InitializeMint}};
-use solana_sdk::signature::Keypair;
+use anchor_spl::token::{InitializeMint, Token};
 
 declare_id!("2Q3jVyyE5nfU3nCZKTuemtHFdxXBcq6QtjWDR387TeJQ");
 
@@ -13,19 +12,19 @@ pub mod application_factory {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>, job_ad_id: String, bump: u8) -> Result<()> {
-
         let details = &mut ctx.accounts.base_account;
 
-        details.reset(job_ad_id, ctx.accounts.authority.key());
+        let job_ad_id_bytes_1 = &job_ad_id.as_bytes()[..18];
+        let job_ad_id_bytes_2 = &job_ad_id.as_bytes()[18..];
 
-        let new_token_mint = Keypair::new();
+        details.reset(job_ad_id.clone(), ctx.accounts.authority.key());
+
+        // let new_token_mint = Keypair::new();
         let decimals = 9;
-        
+
         //TODO: initialize a new token mint
 
         let bump_vector = bump.to_le_bytes();
-        let job_ad_id_bytes_1 = job_ad_id.to_le_bytes()[..18];
-        let job_ad_id_bytes2_2 = job_ad_id.to_le_bytes()[18..];
 
         let inner = vec![
             JOB_APPLICATION_SEED,
@@ -37,7 +36,7 @@ pub mod application_factory {
 
         // Below is the actual instruction that we are going to send to the Token program.
         let transfer_instruction = InitializeMint {
-            mint: new_token_mint,
+            mint: ctx.accounts.mint_account.clone(),
             rent: ctx.accounts.rent.to_account_info(),
         };
         let cpi_ctx = CpiContext::new_with_signer(
@@ -48,8 +47,12 @@ pub mod application_factory {
 
         // The `?` at the end will cause the function to return early in case of an error.
         // This pattern is common in Rust.
-        anchor_spl::token::initialize_mint(cpi_ctx, decimals, ctx.accounts.base_account, ctx.accounts.base_account)?;
-
+        anchor_spl::token::initialize_mint(
+            cpi_ctx,
+            decimals,
+            &ctx.accounts.base_account.key(),
+            None,
+        )?;
 
         Ok(())
     }
@@ -73,7 +76,9 @@ pub struct Initialize<'info> {
     pub authority: Signer<'info>,
     pub token_program: Program<'info, Token>,
     pub rent: Sysvar<'info, Rent>,
-    pub system_program: Program<'info, System>
+    /// CHECk: ...
+    pub mint_account: AccountInfo<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 // #[derive(Account)]
@@ -87,7 +92,7 @@ pub struct Initialize<'info> {
 pub enum JobStatus {
     Selected,
     Rejected,
-    Pending
+    Pending,
 }
 
 #[account]
@@ -95,7 +100,7 @@ pub struct JobApplication {
     pub status: JobStatus, // 1
     pub stake_amount: u32, // 4
     pub job_ad_id: String, // 40
-    pub authority: Pubkey // 32
+    pub authority: Pubkey, // 32
 }
 
 impl<'info> JobApplication {
@@ -106,4 +111,3 @@ impl<'info> JobApplication {
         self.authority = authority;
     }
 }
-
