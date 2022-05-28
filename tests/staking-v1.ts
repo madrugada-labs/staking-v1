@@ -99,12 +99,17 @@ describe("staking-v1", () => {
       applicationProgram.programId
     );
 
-    const tx = await applicationProgram.methods.initialize(jobAdId, applicationFactoryBump).accounts({
+    const [mintPDA, mintBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from("job_application")],
+      applicationProgram.programId
+    )
+
+    const tx = await applicationProgram.methods.initialize(jobAdId, mintBump, applicationFactoryBump).accounts({
       baseAccount: applicationFactoryPDA,
       authority: bob.publicKey,
       tokenProgram: spl.TOKEN_PROGRAM_ID,
       rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-      mintAccount: tokenMint.publicKey,
+      mintAccount: mintPDA,
       systemProgram: anchor.web3.SystemProgram.programId
     }).signers([bob]).rpc();
 
