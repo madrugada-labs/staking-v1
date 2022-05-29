@@ -30,36 +30,33 @@ pub mod application_factory {
 
         //initialize a new token mint
 
-        let bump_vector = bump.to_le_bytes();
+        let bump_vector = mint_bump.to_le_bytes();
 
         let inner = vec![
             JOB_APPLICATION_SEED,
-            job_ad_id_bytes_1,
-            job_ad_id_bytes_2,
-            ctx.accounts.authority.key.as_ref(),
+            // job_ad_id_bytes_1,
+            // job_ad_id_bytes_2,
+            // ctx.accounts.authority.key.as_ref(),
             bump_vector.as_ref(),
         ];
         let outer = vec![inner.as_slice()];
 
         let mint_span: u64 = 82;
         let lamports = Rent::get()?.minimum_balance(usize::try_from(mint_span).unwrap());
-        solana_program::program::invoke_signed(
+        solana_program::program::invoke_signed_unchecked(
             &solana_program::system_instruction::create_account(
-                &ctx.accounts.base_account.key(),
+                &ctx.accounts.authority.key(),
                 &ctx.accounts.mint_account.key(),
                 lamports,
                 mint_span,
                 &ctx.accounts.token_program.key(),
             ),
             &[
-                ctx.accounts.base_account.to_account_info(),
+                ctx.accounts.authority.to_account_info(),
                 ctx.accounts.mint_account.to_account_info(),
                 ctx.accounts.system_program.to_account_info(),
             ],
-            &[&[
-                JOB_APPLICATION_SEED,
-                &[mint_bump]
-            ]],
+            outer.as_slice(),
         )?;
 
         // Below is the actual instruction that we are going to send to the Token program.
@@ -67,10 +64,10 @@ pub mod application_factory {
             mint: ctx.accounts.mint_account.to_account_info(),
             rent: ctx.accounts.rent.to_account_info(),
         };
-        let cpi_ctx = CpiContext::new(
+        let cpi_ctx = CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
             transfer_instruction,
-            // outer.as_slice(), //signer PDA
+            outer.as_slice(), //signer PDA
         );
 
         // The `?` at the end will cause the function to return early in case of an error.
@@ -122,6 +119,10 @@ pub enum JobStatus {
     Selected,
     Rejected,
     Pending,
+}
+
+trait SeedFormat {
+    fn to_seed_format(self) -> String;
 }
 
 #[account]

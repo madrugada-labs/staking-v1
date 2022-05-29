@@ -115,6 +115,35 @@ describe("staking-v1", () => {
 
     console.log("Your transaction signature", tx);
 
+    let newMint = await provider.connection.getAccountInfo(mintPDA);
+    console.log(newMint)
+
+    const tokenAddress = new anchor.web3.PublicKey("Bigvd91m6dugF4kf5scVXFjYzNDwExgqQ59SJJzeTri9");
+
+    console.log(mintPDA.toBase58())
+
+    const tokenMint = await spl.createMint(
+      provider.connection,
+      bob,
+      bob.publicKey,
+      null,
+      6
+    );
+
+    const bobTokenWallet = await spl.createAccount(
+      provider.connection,
+      bob,
+      mintPDA,
+      bob.publicKey
+    );
+
+    let _bobTokenWallet = await spl.getAccount(
+      provider.connection,
+      bobTokenWallet
+    );
+
+    console.log(_bobTokenWallet)
+
     const jobApplicationState = await applicationProgram.account.jobApplication.fetch(applicationFactoryPDA);
 
     console.log(jobApplicationState.status);
