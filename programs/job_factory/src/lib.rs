@@ -1,8 +1,8 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("74RghwMGYpbZSrv4EFgwZP5A4YcKGy2BntdjiMEHB7E8");
 
-const JOB_FACTORY_SEED: &'static [u8] = b"job_factory";
+const JOB_FACTORY_SEED: &'static [u8] = b"jobfactory";
 
 #[program]
 pub mod job_factory {
@@ -23,7 +23,7 @@ pub mod job_factory {
 #[derive(Accounts)]
 #[instruction(job_ad_id: String)]
 pub struct Initialize<'info> {
-    #[account(init, payer = authority, seeds = [JOB_FACTORY_SEED, job_ad_id.as_bytes()[..18].as_ref(), job_ad_id.as_bytes()[18..].as_ref()], bump, space = 4 + 32 + 40 )]
+    #[account(init, payer = authority, seeds = [JOB_FACTORY_SEED, job_ad_id.as_bytes()[..18].as_ref(), job_ad_id.as_bytes()[18..].as_ref()], bump, space = 4 + 32 + 40 + 8 )]
     pub base_account: Account<'info, JobStakingParameter>,
     #[account(mut)]
     pub authority: Signer<'info>,
